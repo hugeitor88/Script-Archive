@@ -108,9 +108,13 @@
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioContext.createMediaElementSource(video);
             const gainNode = audioContext.createGain();
-            gainNode.gain.value = 20.0;
+            gainNode.gain.value = 10.0;
             source.connect(gainNode).connect(audioContext.destination);
-
+            video.onloadeddata = () => {
+        video.play().catch(error => {
+            console.error("Error:", error);
+        });
+    };
             videoContainer.appendChild(video);
             video.play();
         }
