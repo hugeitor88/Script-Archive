@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { auth, db, storage } = firebaseServices;
 
         // Initialize Music Player
-        const musicPlayer = new MusicPlayer('/modules/Trippie Redd  Danny Phantom Ft. XXXTENTACION (Official Music Video).mp3');
+        const musicPlayer = new MusicPlayer('https://github.com/hugeitor88/Script-Archive/raw/refs/heads/main/modules/Trippie%20Redd%20%20Danny%20Phantom%20Ft.%20XXXTENTACION%20(Official%20Music%20Video).mp3');
 
         // Initialize AuthManager and pass the ScriptManager class for lazy instantiation
         const authManager = new AuthManager(firebaseServices, ScriptManager);
