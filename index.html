@@ -1,0 +1,208 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScriptVault</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Import Map for Firebase and other modules -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js",
+                "./modules/firebase-config.js": "./modules/firebase-config.js",
+                "./modules/auth-manager.js": "./modules/auth-manager.js",
+                "./modules/script-manager.js": "./modules/script-manager.js",
+                "./modules/music-player.js": "./modules/music-player.js"
+            }
+        }
+    </script>
+    
+    <!-- Add Howler.js script before our modules -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+</head>
+<body>
+    <!-- Music player container - content will be populated by JS -->
+    <div id="music-player" class="music-player">
+        <div class="music-track-info">
+            <img src="https://i.ytimg.com/vi/iocyX0UJSF0/hqdefault.jpg" alt="Track Thumbnail" class="track-thumbnail">
+            <div class="track-details">
+                <span class="track-title">Danny Phantom</span>
+                <span class="track-artist">Trippie Redd ft. XXXTENTACION</span>
+            </div>
+        </div>
+        <div class="music-controls">
+            <button id="play-pause-btn" class="modern-player-btn">
+                <i class="fas fa-play"></i>
+            </button>
+            <button id="stop-music-btn" class="modern-player-btn">
+                <i class="fas fa-stop"></i>
+            </button>
+            <div class="volume-control">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+            </div>
+        </div>
+        <div class="audio-visualizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
+
+    <div id="auth-container" class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-switcher">
+                <button id="show-login" class="active">Login</button>
+                <button id="show-register">Register</button>
+            </div>
+
+            <div id="login-form" class="auth-form">
+                <h2>Welcome Back</h2>
+                <div class="input-group">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" placeholder="Password" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button id="login-btn" class="submit-button">Login</button>
+            </div>
+
+            <div id="register-form" class="auth-form" style="display:none;">
+                <h2>Create Account</h2>
+                <div class="input-group">
+                    <input type="text" id="register-username" placeholder="Username" required>
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="register-email" placeholder="Email" required>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="register-password" placeholder="Password" required>
+                    <i class="fas fa-lock"></i>
+                </div>
+                <button id="register-btn" class="submit-button">Register</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="modern-container" style="display:none;">
+        <header class="glass-header">
+            <div class="logo">
+                <i class="fab fa-500px"></i>
+                <span>ScriptVault</span>
+            </div>
+            <nav class="modern-nav">
+                <a href="#my-saved-scripts" id="nav-my-saved-scripts" class="nav-link active">
+                    <i class="fas fa-save"></i>
+                    My Saved Scripts
+                </a>
+            </nav>
+            <div id="profile-section" class="profile-section">
+                <div id="profile-avatar" class="profile-avatar">
+                    <img id="user-avatar" src="" alt="User Avatar">
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <section id="my-saved-scripts" class="script-grid">
+                <div id="script-list" class="script-list-grid">
+                    <!-- Dynamic script cards will be inserted here by ScriptManager -->
+                </div>
+
+                <button id="upload-script-btn" class="neomorphic-button">
+                    <i class="fas fa-upload"></i>
+                    Upload New Script
+                </button>
+            </section>
+        </main>
+
+        <div id="upload-modal" class="modern-modal">
+            <div class="modal-wrapper">
+                <div class="modal-close-wrapper">
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-content">
+                    <h2 class="modal-title">Upload & Save Script</h2>
+                    <div class="input-group">
+                        <input type="text" id="script-name" placeholder="Script Name" required>
+                        <i class="fas fa-file-signature"></i>
+                    </div>
+                    <div class="input-group">
+                        <select id="script-language" required>
+                            <option value="">-- Select Language --</option>
+                            <option value="lua">Lua</option>
+                            <option value="python">Python</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <i class="fas fa-code-branch"></i> 
+                    </div>
+                    <div class="input-group">
+                        <textarea id="script-content" placeholder="Script Code" required></textarea>
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <button id="submit-script" class="submit-button">
+                        <i class="fas fa-save"></i>
+                        Save Script
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modern-modal">
+        <div class="modal-wrapper profile-modal-content">
+            <div class="modal-close-wrapper">
+                <span class="close-modal">&times;</span>
+            </div>
+            <h2>Profile Settings</h2>
+            <div class="profile-avatar-upload">
+                <img id="current-avatar" src="" alt="Current Avatar">
+                <input type="file" id="avatar-upload" accept="image/png, image/jpeg">
+                <label for="avatar-upload" class="avatar-upload-btn">
+                    <i class="fas fa-upload"></i> Change Avatar
+                </label>
+                <span id="avatar-upload-status" class="upload-status"></span>
+            </div>
+            <div class="profile-details">
+                <div class="input-group">
+                    <input type="text" id="profile-username" placeholder="Username">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="input-group">
+                    <input type="email" id="profile-email" placeholder="Email" disabled>
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <button id="save-profile" class="submit-button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="scripts.js"></script>
+</body>
+</html>
